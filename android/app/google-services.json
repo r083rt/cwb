@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "196956482860",
+    "project_id": "webbrowser-d72a1",
+    "storage_bucket": "webbrowser-d72a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196956482860:android:f48304d99bf4543c3d9089",
+        "android_client_info": {
+          "package_name": "com.web_browser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoRi1Axhl9AWrsNF9ft430qQko-mhSuHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
