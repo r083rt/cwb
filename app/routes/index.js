@@ -12,6 +12,8 @@ import AdminLogin from '../screens/adminLoginPage';
 import ContentInput from '../screens/contentInputPage';
 import ContentPage from '../screens/contentPage';
 import AdminMenu from '../screens/adminMenuPage';
+import AdminChangePass from '../screens/adminChangePassPage';
+import AdminAddUser from '../screens/adminAddUserPage';
 
 const Stack = createStackNavigator();
 const screenOptionStyle = {
@@ -56,6 +58,11 @@ function MainStackNavigator({navigation, route}) {
         <Stack.Screen
           name="AdminMenu"
           component={AdminMenu}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AdminAddUser"
+          component={AdminAddUser}
           options={{headerShown: false}}
         />
         <Stack.Screen

@@ -37,6 +37,10 @@ import {
   ActionsheetItem,
   ActionsheetItemText,
   ButtonSpinner,
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription,
 } from '@gluestack-ui/themed';
 import {
   Image,
@@ -62,7 +66,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import realm from '../models';
 import uuid from 'react-native-uuid';
-import Toast from 'react-native-toast-message';
+
 import LottieView from 'lottie-react-native';
 import moment from 'moment';
 import {firebase} from '@react-native-firebase/auth';
@@ -151,6 +155,11 @@ export default function AdminLoginPage({navigation}) {
             {isLoading ? <ButtonSpinner /> : <ButtonText>Login</ButtonText>}
           </Button>
         </Box>
+        {/* <Box justifyContent="flex-start" w={'$full'}>
+          <Button onPress={() => navigation.navigate('AdminChangePass')}>
+            <ButtonText>Change Password</ButtonText>
+          </Button>
+        </Box> */}
         <Box justifyContent="flex-start" w={'$full'}>
           <Button action="secondary" onPress={() => navigation.goBack()}>
             {isLoading ? <ButtonSpinner /> : <ButtonText>Kembali</ButtonText>}

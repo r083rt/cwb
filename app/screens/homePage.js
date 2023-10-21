@@ -32,14 +32,9 @@ import {
   ActionsheetDragIndicator,
   ActionsheetItem,
   ActionsheetItemText,
-} from '@gluestack-ui/themed';
-import {
   Image,
-  Dimensions,
-  BackHandler,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+} from '@gluestack-ui/themed';
+import {Dimensions, BackHandler, TouchableOpacity, Alert} from 'react-native';
 import {WebView} from 'react-native-webview';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
@@ -654,8 +649,8 @@ export default function HomePage({navigation, route}) {
       <InputComponent
         onClear={() => {
           stopLoadingWebView();
-          setCurrentUrl('');
-          setSearchData([]);
+          // setCurrentUrl('');
+          // setSearchData([]);
         }}
         onViewHistory={showHistory}
         onViewBookmark={showBookmark}
@@ -722,7 +717,7 @@ export default function HomePage({navigation, route}) {
                 {isLoading == false ? (
                   <InputIcon as={SearchIcon} color="$gray" />
                 ) : (
-                  <Spinner />
+                  <Spinner color={'#5039A3'} />
                 )}
               </InputSlot>
             </Input>
@@ -781,10 +776,16 @@ export default function HomePage({navigation, route}) {
             ) : null} */}
             <TouchableOpacity onPress={onAndroidBackPress}>
               <HStack space="sm">
-                <MaterialCommunity
+                {/* <MaterialCommunity
                   name="arrow-left"
                   size={20}
                   color={'#000000'}
+                /> */}
+                <Image
+                  source={require('../assets/back.png')}
+                  width={20}
+                  height={20}
+                  opacity={0.5}
                 />
                 <Text size="xs" color={'#000000'}>
                   Back
@@ -799,11 +800,17 @@ export default function HomePage({navigation, route}) {
                 <Text size="xs" color={!canGoForward ? '#C9C9C9' : '#000000'}>
                   Forward
                 </Text>
-                <MaterialCommunity
+                <Image
+                  source={require('../assets/next.png')}
+                  width={20}
+                  height={20}
+                  opacity={0.5}
+                />
+                {/* <MaterialCommunity
                   name="arrow-right"
                   size={20}
                   color={!canGoForward ? '#C9C9C9' : '#000000'}
-                />
+                /> */}
               </HStack>
             </TouchableOpacity>
             <Divider orientation="vertical" />
@@ -812,10 +819,16 @@ export default function HomePage({navigation, route}) {
                 setShowModalInput(true);
               }}>
               <HStack space="sm">
-                <MaterialCommunity
+                {/* <MaterialCommunity
                   name="bookmark-plus-outline"
                   size={20}
                   color={'#000000'}
+                /> */}
+                <Image
+                  source={require('../assets/bookmark_add.png')}
+                  width={20}
+                  height={20}
+                  opacity={0.5}
                 />
                 <Text size="xs" color={'#000000'}>
                   Bookmark
@@ -825,6 +838,7 @@ export default function HomePage({navigation, route}) {
           </HStack>
 
           <WebView
+            setSupportMultipleWindows={false}
             style={{bottom: 10}}
             ref={webViewRef}
             source={{uri: currentUrl}}

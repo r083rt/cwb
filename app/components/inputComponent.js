@@ -28,9 +28,9 @@ import {
   InputIcon,
   Divider,
   Progress,
+  Image,
 } from '@gluestack-ui/themed';
 import {
-  Image,
   Dimensions,
   StatusBarm,
   BackHandler,
@@ -56,7 +56,12 @@ const InputComponent = ({
     <Box w={size.width}>
       <HStack space="md" m={10} justifyContent="flex-start" alignItems="center">
         <TouchableOpacity onPress={() => onHome()}>
-          <Feather name="home" size={25} />
+          <Image
+            source={require('../assets/home.png')}
+            width={25}
+            height={25}
+            opacity={0.5}
+          />
         </TouchableOpacity>
         <Input
           borderRadius={30}
@@ -78,11 +83,22 @@ const InputComponent = ({
             {setUrl}
           </InputField>
         </Input>
-        <TouchableOpacity onPress={() => onViewBookmark()}>
-          <MaterialCommunity name="close-outline" size={20} />
+        <TouchableOpacity onPress={() => onClear()}>
+          <Image
+            source={require('../assets/close.png')}
+            width={20}
+            height={20}
+            opacity={0.5}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onViewBookmark()}>
-          <MaterialCommunity name="bookmark-outline" size={20} />
+          <Image
+            source={require('../assets/bookmark.png')}
+            width={20}
+            height={20}
+            opacity={0.5}
+          />
+          {/* <MaterialCommunity name="bookmark-outline" size={20} /> */}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onViewHistory()}>
           <MaterialCommunity name="history" size={20} />

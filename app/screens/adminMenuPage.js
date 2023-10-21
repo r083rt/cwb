@@ -200,6 +200,16 @@ export default function AdminMenuPage({navigation}) {
           </Button>
         </Box>
         <Box justifyContent="flex-start" w={'$full'}>
+          <Button onPress={() => navigation.navigate('AdminAddUser')}>
+            <ButtonText>Tambah Admin</ButtonText>
+          </Button>
+        </Box>
+        <Box justifyContent="flex-start" w={'$full'}>
+          <Button onPress={() => navigation.navigate('AdminChangePass')}>
+            <ButtonText>Ganti Password</ButtonText>
+          </Button>
+        </Box>
+        <Box justifyContent="flex-start" w={'$full'}>
           <Button
             action="negative"
             onPress={() => {
