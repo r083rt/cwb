@@ -66,6 +66,11 @@ function MainStackNavigator({navigation, route}) {
           options={{headerShown: false}}
         />
         <Stack.Screen
+          name="AdminChangePass"
+          component={AdminChangePass}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
           name="ContentInput"
           component={ContentInput}
           options={{headerShown: false}}

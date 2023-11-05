@@ -36,15 +36,20 @@ import {
 } from '@gluestack-ui/themed';
 import {Dimensions, BackHandler, TouchableOpacity, Alert} from 'react-native';
 import {WebView} from 'react-native-webview';
-import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
-import {BookmarkComponent, InputComponent, SearchView} from '../components';
+import {
+  BookmarkComponent,
+  InputComponent,
+  SearchView,
+  BrowserTabs,
+} from '../components';
 import firestore from '@react-native-firebase/firestore';
 import realm from '../models';
-import uuid from 'react-native-uuid';
 import * as Progress from 'react-native-progress';
 // import LottieView from 'lottie-react-native';
+import uuid from 'react-native-uuid';
 import moment from 'moment';
+import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function HomePage({navigation, route}) {
   const [nextLink, setNextLink] = useState(null);
   const [webTitle, setWebTitle] = useState('');
@@ -57,9 +62,8 @@ export default function HomePage({navigation, route}) {
   const [keyword, setKeyword] = useState('');
   const [b, setB] = useState(1);
   const [start, setStart] = useState(0);
-  const [prevUrl, setPrevUrl] = useState('');
+  const [activeTab, setActiveTab] = useState('');
   const [isValidURL, setIsValidURL] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(0);
 
   const [dataBookmark, setDataBookmark] = useState([]);
   const webViewRef = React.useRef(null);
@@ -72,10 +76,22 @@ export default function HomePage({navigation, route}) {
   const [showModalInput, setShowModalInput] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const bookmarkRef = useRef(null);
-
+  const searchboxRef = useRef(null);
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
   const [currentUrl, setCurrentUrl] = useState('');
+  const [tabs, setTabs] = useState([
+    {
+      id: uuid.v4(),
+      name: 'Tab 1',
+      url: '',
+      query: '',
+      b: '',
+      webTitle: '',
+      currentUrl: '',
+      searchData: [],
+    },
+  ]);
   const apiKey =
     '7b86c901fb584ce52676a3182d64be676c16a4a53920d467b2d83b0b10e1e83e';
   const getContents = async () => {
@@ -210,14 +226,6 @@ export default function HomePage({navigation, route}) {
   };
 
   const handleNextPage = async () => {
-    console.log('getting next page');
-
-    const p = query;
-    const vc = 'id';
-    const vm = 'p';
-    const device = 'mobile';
-
-    console.log(searchEngine);
     let params;
 
     if (searchEngine === 'yahoo') {
@@ -307,7 +315,6 @@ export default function HomePage({navigation, route}) {
       });
 
       try {
-        console.log(searchEngine);
         let params;
 
         if (searchEngine === 'yahoo') {
@@ -549,6 +556,166 @@ export default function HomePage({navigation, route}) {
     ]);
   };
 
+  const handleNewTab = () => {};
+
+  const handleDeleteTab = e => {
+    console.log(e);
+    setTabs(tabs.filter(tab => tab.id !== e.id));
+    // tabs.filter(tab => tab.id !== idToDelete)
+  };
+
+  const handleSelectTab = e => {
+    console.log(e);
+    setActiveTab(e);
+  };
+
+  const renderTab =
+    activeTab.searchData.length === 0 && activeTab.currentUrl === '' ? (
+      <Box>
+        <Center>
+          <Text>{activeTab.id}</Text>
+          <Image
+            alt="logo"
+            source={require('../assets/logo.png')}
+            style={{
+              width: size.width * 0.3,
+              height: size.width * 0.4,
+              marginTop: 30,
+            }}
+            resizeMode="cover"
+          />
+        </Center>
+
+        <Box w={'$full'} p={20}>
+          <Input borderRadius={50}>
+            <InputField
+              ref={searchboxRef}
+              value={query}
+              onChangeText={text => setActiveTab({...activeTab, query: text})}
+              fontSize={14}
+              onSubmitEditing={handleInputSubmit}
+              placeholder="Masukkan kata kunci pencarian"
+              backgroundColor="#EDEDED"></InputField>
+            <InputSlot
+              pr="$3"
+              onPress={handleInputSubmit}
+              backgroundColor="#EDEDED">
+              {isLoading == false ? (
+                <InputIcon as={SearchIcon} color="$gray" />
+              ) : (
+                <Spinner color={'#5039A3'} />
+              )}
+            </InputSlot>
+          </Input>
+        </Box>
+      </Box>
+    ) : searchData.length > 0 && currentUrl === '' ? (
+      <>
+        <Box mx={10} alignItems="flex-end">
+          <Text color="#A7A7A7" size="2xs" textAlign="right">
+            Source - {searchEngine.toUpperCase()}
+          </Text>
+        </Box>
+        <Box mx={15}>
+          <Text>
+            Keyword :{' '}
+            <Text color={'$blue'} italic bold>
+              "{keyword}"
+            </Text>
+          </Text>
+          <Text size="xs" mt={2} mb={5} color={'#919191'} italic>
+            Search Time : {dataApi}
+          </Text>
+        </Box>
+
+        <SearchView
+          data={searchData}
+          onEndReached={handleNextPage}
+          onSubmit={handleSubmit}
+        />
+      </>
+    ) : (
+      <>
+        <HStack
+          space="xl"
+          top={1}
+          elevation={4}
+          justifyContent="center"
+          bottom={10}
+          p={10}
+          backgroundColor="#F0F0F0"
+          w={'$full'}>
+          <TouchableOpacity onPress={onAndroidBackPress}>
+            <HStack space="sm">
+              <Image
+                alt="back"
+                source={require('../assets/back.png')}
+                width={20}
+                height={20}
+                opacity={0.5}
+              />
+              <Text size="xs" color={'#000000'}>
+                Back
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+          <Divider orientation="vertical" />
+          <TouchableOpacity
+            disabled={!canGoForward}
+            onPress={onAndroidForwardPress}>
+            <HStack space="sm">
+              <Text size="xs" color={!canGoForward ? '#C9C9C9' : '#000000'}>
+                Forward
+              </Text>
+              <Image
+                alt="next"
+                source={require('../assets/next.png')}
+                width={20}
+                height={20}
+                opacity={0.5}
+              />
+            </HStack>
+          </TouchableOpacity>
+          <Divider orientation="vertical" />
+          <TouchableOpacity
+            onPress={() => {
+              setShowModalInput(true);
+            }}>
+            <HStack space="sm">
+              <Image
+                alt="addbookmark"
+                source={require('../assets/bookmark_add.png')}
+                width={20}
+                height={20}
+                opacity={0.5}
+              />
+              <Text size="xs" color={'#000000'}>
+                Bookmark
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        </HStack>
+
+        <WebView
+          setSupportMultipleWindows={false}
+          style={{bottom: 10}}
+          ref={webViewRef}
+          source={{uri: currentUrl}}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          startInLoadingState={true}
+          onAddNewTab={handleNewTab}
+          onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+          onNavigationStateChange={navState => {
+            setCanGoBack(navState.canGoBack);
+            setCanGoForward(navState.canGoForward);
+            setCurrentUrl(navState.url);
+            setIsLoading(navState.loading);
+          }}
+        />
+      </>
+    );
+
   return (
     <Box flex={1} backgroundColor="$white">
       <Actionsheet
@@ -677,11 +844,46 @@ export default function HomePage({navigation, route}) {
         />
       )}
 
-      {/* Search View */}
-      {searchData.length === 0 && currentUrl === '' ? (
+      <HStack mx={10} mt={10} mb={0} alignItems="center">
+        <TouchableOpacity
+          onPress={() =>
+            setTabs(prevTabs => [
+              ...prevTabs,
+              {
+                id: uuid.v4(),
+                name: 'New Tab',
+                url: '',
+                query: '',
+                b: '',
+                webTitle: '',
+                currentUrl: '',
+                searchData: [],
+              },
+            ])
+          }>
+          <Box p={10}>
+            <MaterialCommunity
+              name="plus"
+              size={20}
+              style={{fontWeight: 'bold'}}
+            />
+          </Box>
+        </TouchableOpacity>
+        <BrowserTabs
+          data={tabs}
+          onDelete={e => {
+            handleDeleteTab(e);
+          }}
+          onSelect={handleSelectTab}
+        />
+      </HStack>
+      <Divider m={0} />
+
+      {/* {searchData.length === 0 && currentUrl === '' ? (
         <Box>
           <Center>
             <Image
+              alt="logo"
               source={require('../assets/logo.png')}
               style={{
                 width: size.width * 0.3,
@@ -690,21 +892,13 @@ export default function HomePage({navigation, route}) {
               }}
               resizeMode="cover"
             />
-            {/* <LottieView
-              style={{
-                width: 200,
-                height: 190,
-                // opacity: 0.9,
-              }}
-              source={require('../assets/search2.json')}
-              autoPlay
-              loop
-            /> */}
           </Center>
 
           <Box w={'$full'} p={20}>
             <Input borderRadius={50}>
               <InputField
+                ref={searchboxRef}
+                value={query}
                 onChangeText={text => setQuery(text)}
                 fontSize={14}
                 onSubmitEditing={handleInputSubmit}
@@ -759,29 +953,10 @@ export default function HomePage({navigation, route}) {
             p={10}
             backgroundColor="#F0F0F0"
             w={'$full'}>
-            {/* {searchData.length > 0 ? (
-              <>
-                <TouchableOpacity
-                  onPress={() => {
-                    setCurrentUrl('');
-                    // console.log(searchData.length);
-                  }}>
-                  <HStack space="sm">
-                    <MaterialCommunity name="backup-restore" size={20} />
-                    <Text size="sm">Search result</Text>
-                  </HStack>
-                </TouchableOpacity>
-                <Divider orientation="vertical" />
-              </>
-            ) : null} */}
             <TouchableOpacity onPress={onAndroidBackPress}>
               <HStack space="sm">
-                {/* <MaterialCommunity
-                  name="arrow-left"
-                  size={20}
-                  color={'#000000'}
-                /> */}
                 <Image
+                  alt="back"
                   source={require('../assets/back.png')}
                   width={20}
                   height={20}
@@ -801,16 +976,12 @@ export default function HomePage({navigation, route}) {
                   Forward
                 </Text>
                 <Image
+                  alt="next"
                   source={require('../assets/next.png')}
                   width={20}
                   height={20}
                   opacity={0.5}
                 />
-                {/* <MaterialCommunity
-                  name="arrow-right"
-                  size={20}
-                  color={!canGoForward ? '#C9C9C9' : '#000000'}
-                /> */}
               </HStack>
             </TouchableOpacity>
             <Divider orientation="vertical" />
@@ -819,12 +990,8 @@ export default function HomePage({navigation, route}) {
                 setShowModalInput(true);
               }}>
               <HStack space="sm">
-                {/* <MaterialCommunity
-                  name="bookmark-plus-outline"
-                  size={20}
-                  color={'#000000'}
-                /> */}
                 <Image
+                  alt="addbookmark"
                   source={require('../assets/bookmark_add.png')}
                   width={20}
                   height={20}
@@ -842,6 +1009,10 @@ export default function HomePage({navigation, route}) {
             style={{bottom: 10}}
             ref={webViewRef}
             source={{uri: currentUrl}}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            startInLoadingState={true}
+            onAddNewTab={handleNewTab}
             onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
             onNavigationStateChange={navState => {
               setCanGoBack(navState.canGoBack);
@@ -851,7 +1022,8 @@ export default function HomePage({navigation, route}) {
             }}
           />
         </>
-      )}
+      )} */}
+      {renderTab}
     </Box>
   );
 }

@@ -5,6 +5,8 @@ import InputComponent from './inputComponent';
 import BookmarkComponent from './bookmarkComponent';
 import CustomDatePicker from './customDatePicker';
 import ContentsList from './contentsList';
+import BrowserTabs from './browserTabs';
+import BrowserContent from './browserContent';
 export {
   BrowserView,
   SearchView,
@@ -13,4 +15,6 @@ export {
   BookmarkComponent,
   CustomDatePicker,
   ContentsList,
+  BrowserTabs,
+  BrowserContent,
 };
